@@ -10,7 +10,7 @@ const PaymentPage = ({ username }) => {
     // const { data: session } = useSession()
     const router = useRouter();
     const SearchParams = useSearchParams();
-    const [paymentform, setpaymentform] = useState({name:"", message:"", amount:""})
+    const [paymentform, setpaymentform] = useState({name:"user123", message:"Donated successfully", amount:""})
     const [currentUser, setcurrentUser] = useState({})
     const [payments, setPayments] = useState([])
     const handleChange = (e) => {
@@ -34,7 +34,7 @@ const PaymentPage = ({ username }) => {
         let p = await fetchpayments(username)
         setPayments(p)
     }
-
+console.log(currentUser, payments)
     const pay = async (amount) => {
         let o = await initiate(amount, username, paymentform)
         const baseUrl = window.location.origin;
@@ -66,7 +66,7 @@ const PaymentPage = ({ username }) => {
     return (
         <>
             <Script src='https://checkout.razorpay.com/v1/checkout.js'></Script>
-            <div className="cover relative w-full h-20 bg-red-50">
+            <div className="cover relative w-full h-80 bg-red-50">
                 <img className='object-cover w-full h-full' src={currentUser.coverPicture} alt="Cover Image" />
                 <div className="absolute -bottom-8 sm:-bottom-12 md:-bottom-15 left-1/2 transform -translate-x-1/2 rounded-full border-2 overflow-hidden size-20 sm:size-24 md:size-32 border-gray-300">
                     <img alt="creator-public-page-avatar" className="rounded-full size-20 sm:size-24 md:size-32" src={currentUser.profilePicture} />
@@ -88,16 +88,16 @@ const PaymentPage = ({ username }) => {
                     {/* Show list of all Supporters as a Leaderboard  */}
                     <h2 className='text-2xl font-bold mb-5'>Supporters</h2>
                     <ul className='mx-5'>
-                        {payments.length === 0 ?
+{payments.length === 0 ?
                             (<h1>No Payments yet</h1>)
-                            : payments.map((p, i) => {
+                            : payments.map((p, i) => (
                                 <li key={i} className='my-2 flex gap-2 items-center'>
                                     <img src="avatar.gif" width={30} alt="user avatar" />
                                     <span className='text-sm'>
-                                        {p.name}<span className='font-bold'>${p.amount}</span> with a message "{p.message}"
+                                        {p.name} donated <span className='font-bold'>${p.amount}</span> with a message "{p.message}"
                                     </span>
                                 </li>
-                            })}
+                            ))}
                     </ul>
                 </div>
                 <div className="makePayments w-full md:w-1/2 bg-slate-900 rounded-lg text-white p-5 md:p-10">

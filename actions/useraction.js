@@ -4,6 +4,8 @@ import Payment from '@/models/Payment'
 import connectDB from '@/db/connectdb'
 import Users from '@/models/Users'
 
+const serialize = (data) => JSON.parse(JSON.stringify(data));
+
 export const initiate = async (amount, to_user, paymnetfom) => {
     await connectDB()
     const paymentAmount = Number(amount);
@@ -35,23 +37,22 @@ export const initiate = async (amount, to_user, paymnetfom) => {
         throw new Error(error?.error?.description || error?.message || 'Unable to create Razorpay order.')
     }
 
-    await Payment.create({ oid: x.id, amount: paymentAmount, to_user: to_user, name: paymnetfom.name, message: paymnetfom.message })
-
+    const data = await Payment.create({ oid: x.id, amount: paymentAmount, to_user: to_user, name: paymnetfom.name, message: paymnetfom.message })
+    console.log(data)   
     return x
 }
 
 export const fetchuser = async (username) => {
     await connectDB()
-    let u = await Users.findOne({ username: username });
+    let u = await Users.findOne({ username: username }).lean();
     if (!u) return null;
-    let user = u.toObject({ flattenObjectIds: true })
-    return user
+    return serialize(u)
 }
 
 export const fetchpayments = async (username) => {
     await connectDB()
     let p = await Payment.find({ to_user: username, done: true }).sort({ amount: -1 }).limit(10).lean()
-    return p
+    return serialize(p)
 }
 
 export const updateprofile = async (data, oldusername) => {
