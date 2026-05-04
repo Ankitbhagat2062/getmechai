@@ -25,7 +25,6 @@ const Dashboard = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
     const handleSubmit = async (e) => {
-        console.log(e)
         let a = await updateprofile(e, session.user.name)
         toast("Profile Updated")
     }

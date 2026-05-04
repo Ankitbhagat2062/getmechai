@@ -9,7 +9,6 @@ const LoginComponent = () => {
         if (session) {
             router.push('/dashboard');
         }
-        console.log(session);
     }, [session])
     return (
         <div className='text-white py-14 container mx-auto '>

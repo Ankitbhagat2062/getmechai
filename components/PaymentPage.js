@@ -34,7 +34,6 @@ const PaymentPage = ({ username }) => {
         let p = await fetchpayments(username)
         setPayments(p)
     }
-console.log(currentUser, payments)
     const pay = async (amount) => {
         let o = await initiate(amount, username, paymentform)
         const baseUrl = window.location.origin;

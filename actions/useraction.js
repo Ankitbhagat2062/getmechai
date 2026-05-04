@@ -38,7 +38,6 @@ export const initiate = async (amount, to_user, paymnetfom) => {
     }
 
     const data = await Payment.create({ oid: x.id, amount: paymentAmount, to_user: to_user, name: paymnetfom.name, message: paymnetfom.message })
-    console.log(data)   
     return x
 }
 
