@@ -6,22 +6,36 @@ import Users from '@/models/Users'
 
 export const initiate = async (amount, to_user, paymnetfom) => {
     await connectDB()
+    const paymentAmount = Number(amount);
+    if (!Number.isFinite(paymentAmount) || paymentAmount <= 0) {
+        throw new Error('Please enter a valid payment amount.');
+    }
+
     let user = await Users.findOne({ username: to_user });
+    if (!user?.razorpayId || !user?.razorpaySecret) {
+        throw new Error('This creator has not added Razorpay keys yet.');
+    }
+
     const razorpaysecret = user.razorpaySecret
     var instance = new Razorpay({ key_id: user.razorpayId, key_secret: razorpaysecret })
 
     let options = {
-        amount: Number.parseInt(amount * 100),
+        amount: Math.round(paymentAmount * 100),
         currency: 'INR',
-        receipt: 'receipt#1',
-        nots: {
+        receipt: `receipt_${Date.now()}`,
+        notes: {
             key1: 'value2',
             key2: 'value3'
         },
     }
-    let x = await instance.orders.create(options)
+    let x;
+    try {
+        x = await instance.orders.create(options)
+    } catch (error) {
+        throw new Error(error?.error?.description || error?.message || 'Unable to create Razorpay order.')
+    }
 
-    await Payment.create({ oid: x.id, amount: amount, to_user: to_user, name: paymnetfom.name, message: paymnetfom.message })
+    await Payment.create({ oid: x.id, amount: paymentAmount, to_user: to_user, name: paymnetfom.name, message: paymnetfom.message })
 
     return x
 }

@@ -36,16 +36,17 @@ const PaymentPage = ({ username }) => {
 
     const pay = async (amount) => {
         let o = await initiate(amount, username, paymentform)
+        const baseUrl = window.location.origin;
         let orderId = o.id
         var options = {
             "key": currentUser.razorpayId,
-            "amount": `${amount * 100}`,
+            "amount": o.amount,
             "currency": "INR",
             "name": "",
             "description": "",
-            "image": `${process.env.NEXT_PUBLIC_URL}/tea.gif`,
+            "image": `${baseUrl}/tea.gif`,
             "order_id": orderId,
-            "callback_url": `${process.env.NEXT_PUBLIC_URL}/api/razorpay`,
+            "callback_url": `${baseUrl}/api/razorpay`,
             "prefill": {
                 "name": "Gaurav Kumar",
                 "email": "gaurav.kumar@gmail.com",
@@ -64,7 +65,7 @@ const PaymentPage = ({ username }) => {
     return (
         <>
             <Script src='https://checkout.razorpay.com/v1/checkout.js'></Script>
-            <div className="cover relative w-full bg-red-50">
+            <div className="cover relative w-full h-20 bg-red-50">
                 <img className='object-cover w-full h-full' src={currentUser.coverPicture} alt="Cover Image" />
                 <div className="absolute -bottom-8 sm:-bottom-12 md:-bottom-15 left-1/2 transform -translate-x-1/2 rounded-full border-2 overflow-hidden size-20 sm:size-24 md:size-32 border-gray-300">
                     <img alt="creator-public-page-avatar" className="rounded-full size-20 sm:size-24 md:size-32" src={currentUser.profilePicture} />

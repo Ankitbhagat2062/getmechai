@@ -3,8 +3,8 @@ import connectDB from '@/db/connectdb';
 import NextAuth from 'next-auth'
 import GitHubProvider from 'next-auth/providers/github'
 
-connectDB();
 export const authOptions = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
@@ -14,6 +14,7 @@ export const authOptions = NextAuth({
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
      if (account.provider === 'github') {
+        await connectDB();
         const currentUser = await User.findOne({ email: user.email });
         if (!currentUser) {
           const newUser = new User({
@@ -26,6 +27,7 @@ export const authOptions = NextAuth({
       }
     },
     async session({ session, user, token }) {
+      await connectDB();
       const dbUser = await User.findOne({ email: session.user.email });
       session.user.name = dbUser.username;
       return session;
