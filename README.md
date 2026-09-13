@@ -2,6 +2,16 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+exports.generateSignature= (req, res)=>{
+const {tota 1 _ amount, transaction_uuid, body
+const dataToSign=•
+// user secret key to create Hmac sha256 signature
+const secretKey=process.env.ESEWA SECRET KEY
+const signature=crypto. createHmac( ' sha256 ' , secretKey) .update
+(dataToSign) .digest( ' base64 ' )
+res.json(signature)
+}
+
 First, run the development server:
 
 ```bash
